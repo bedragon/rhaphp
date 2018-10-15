@@ -1,0 +1,58 @@
+{extend name="../admin/common/base" /}
+{block name="body"}
+<form class="layui-form" method="post" style="padding-right: 10px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入店铺名称" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="address" required lay-verify="required" placeholder="请输入地址" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">LOGO</label>
+        <div class="layui-input-block">
+            {:hook('Upload',['type'=>'image','name'=>'logo'])}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关状态</label>
+        <div class="layui-input-block">
+            <input name="type" value="0" checked  title="开启"  type="radio">
+            <input name="type" value="1"  title="关闭" type="radio">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="sbm">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sbm)', function (data) {
+            $.post('',data.field,function (res) {
+                if(res.status=='1'){
+                    layer.msg(res.msg,{time:1000},function () {
+                         window.location.href="{:url('store/index/addStore')}";
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            })
+            return false;
+        });
+    });
+</script>
+{/block}

@@ -718,3 +718,37 @@ if (!function_exists('yaconf')) {
         return Config::yaconf($name, $default);
     }
 }
+
+if (!function_exists('strLength')) {
+    /**
+     * 
+     * 中英混合字符串长度判断 
+     * @param unknown_type $str
+     * @param unknown_type $charset
+     */
+    function strLength($str, $charset = 'utf-8') {
+      if ($charset == 'utf-8')
+        $str = iconv ( 'utf-8', 'gb2312', $str );
+      $num = strlen ( $str );
+      $cnNum = 0;
+      for($i = 0; $i < $num; $i ++) {
+        if (ord ( substr ( $str, $i + 1, 1 ) ) > 127) {
+          $cnNum ++;
+          $i ++;
+        }
+      }
+      $enNum = $num - ($cnNum * 2);
+      $number = ($enNum / 2) + $cnNum;
+      return ceil ( $number );
+    }
+}
+
+if (!function_exists('utf8_strlen')) {
+    // 计算中文字符串长度
+    function utf8_strlen($string = null) {
+        // 将字符串分解为单元
+        preg_match_all("/./us", $string, $match);
+        // 返回单元个数
+        return count($match[0]);
+    }
+}
