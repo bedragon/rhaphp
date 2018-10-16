@@ -1,0 +1,80 @@
+{extend name="../admin/common/base" /}
+{block name="body"}
+<form class="layui-form" method="post" style="padding-right: 10px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" value="{$data['name']}" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">单位</label>
+        <div class="layui-input-block">
+            <input type="text" name="unit" value="{$data['unit']}" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">单价</label>
+        <div class="layui-input-block">
+            <input type="text" name="unit_price" value="{$data['unit_price']}"  required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="content" value="{$data['content']}"  required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">库存</label>
+        <div class="layui-input-block">
+            <input type="text" name="stock" value="{$data['stock']}" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片</label>
+        <div class="layui-input-block">
+            {:hook('Upload',['type'=>'image','name'=>'img', 'value'=>$data.img])}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上/下架</label>
+        <div class="layui-input-block">
+            <input name="type" value="0" checked  title="上架"  type="radio">
+            <input name="type" value="1"  title="下架" type="radio">
+        </div>
+    </div>
+
+    <input name="id" value="{$data.id}" type="hidden" />
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="sbm">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        form.on('submit(sbm)', function (data) {
+            $.post('',data.field,function (res) {
+                if(res.status=='1'){
+                    layer.msg(res.msg,{time:1000},function () {
+                         window.location.href="{:url('store/goods/editSku')}";
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            })
+            return false;
+        });
+    });
+</script>
+{/block}

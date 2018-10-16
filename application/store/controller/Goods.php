@@ -11,7 +11,7 @@
 namespace app\store\controller;
 
 
-use app\common\model\Addons;
+use app\common\model\StoreSku;
 use think\Db;
 use think\Exception;
 use think\facade\Request;
@@ -20,7 +20,7 @@ use think\facade\Url;
 use think\Validate;
 use app\admin\controller\Base;
 
-class Index extends Base
+class Goods extends Base
 {
 
     public function initialize()
@@ -32,96 +32,91 @@ class Index extends Base
 
     public function list()
     {
-        $MpList = Db::name('store_list')
-            ->where(['uid' => $this->admin_id])
-            ->select();
-        foreach ($MpList as $key => $v) {
-            $MpList[$key]['type'] = getMpType($v['type']);
-        }
-        $this->assign('menu_title', '店铺管理');
-        $this->assign('storeList', $MpList);
+        //这里需要做分页
+        //
+        $model = new StoreSku();
+        $list = $model->getSkuByUid($this->admin_id);
+        $this->assign('menu_title', '商品管理');
+        $this->assign('list', $list);
         return view();
     }
 
-    public function checkStoreParams($data){
+    protected function checkSkuParams($data){
             if (utf8_strlen($data['name']) > 10) {
                 return '名字太长';
             }
 
-            if (utf8_strlen($data['address']) > 60) {
-                return '地址太长';
+            if (utf8_strlen($data['unit']) > 2) {
+                return '单位太长';
+            }
+
+            if (utf8_strlen($data['content']) >= 100) {
+                return '描述太长';
             }
         
-            if (strlen($data['logo']) > 200) {
-                return 'logo字符不能超过200';
+            if (strlen($data['img']) > 200) {
+                return '图片地址太长';
             }
             
             return true;
     
     }
 
-    public function addStore(){
+    public function addSku(){
         if (Request::isAjax() && Request::isPost()) {
             $data = input('post.');
             
-            $checkMsg = $this->checkStoreParams($data);
+            $checkMsg = $this->checkSkuParams($data);
             if ($checkMsg !== TRUE) {
                 return ajaxMsg(0, $checkMsg);
             } 
 
-            $mode = new \app\common\model\StoreList();
-            $id = $mode->insertGetId(
+            $mode = new StoreSku();
+            $id = $mode->addSku(
                 [
                 'name' => $data['name'], 
-                'address' => $data['address'], 
-                'logo' => $data['logo'], 
+                'unit' => $data['unit'], 
+                'unit_price' => $data['unit_price'], 
+                'content' => $data['content'],
+                'img'=> $data['img'],
+                'stock' => (int)$data['stock'],
                 'type' => (int)$data['type'], 
-                'uid' => $this->admin_id
-                ]);
+                ], $this->admin_id);
             if ($id) {
                 ajaxMsg(1, '新增成功');
             }
             ajaxMsg(0, '新增失败');
         }
-        $this->assign('menu_title', '新增店铺');
-        return  view('addStore');
+        $this->assign('menu_title', '新增商品');
+        return  view('addSku');
     }
 
-    public function editStore(){
-        $mode = new \app\common\model\StoreList();
+    public function editSku(){
+        $model = new \app\common\model\StoreSku();
         if (Request::isAjax() && Request::isPost()) {
             $data = input('post.');
             
-            $checkMsg = $this->checkStoreParams($data);
+            $checkMsg = $this->checkSkuParams($data);
             if ($checkMsg !== TRUE) {
                 return ajaxMsg(0, $checkMsg);
             } 
-
-            $aUpdate = [
-                'name' => $data['name'], 
-                'address' => $data['address'], 
-                'type' => (int)$data['type'], 
-                ];
-            if ($data['logo'] != '') {
-                $aUpdate['logo'] = $data['logo'];
-            }
-
-            $res = $mode->allowField(true)->save($aUpdate, ['id' => (int)$data['id'], 'uid' => $this->admin_id]);
+            $res = $model->editSku($data, $this->admin_id);
             if ($res) {
                 return ajaxMsg(0, '更新成功');
             }
             return ajaxMsg(0, '更新失败');
         }
         $id = (int)input('id');
-        $aStore = Db::name('store_list')->where(['id'=>$id, 'uid'=>$this->admin_id])->select();
+        $aStore = Db::name('store_sku')->where(['id'=>$id, 'uid'=>$this->admin_id])->select();
         if (count($aStore) <= 0) {
-            $this->assign('menu_title', '新增店铺');
-            view('addStore');
+            $this->assign('menu_title', '新增商品');
+            return view('addSku');
+            
         }
         
         $this->assign('data', $aStore[0]);
-        $this->assign('menu_title', '修改店铺');
-        return  view('editStore');
+        $this->assign('menu_title', '修改商品');
+        return  view('editSku');
     }
 
 
