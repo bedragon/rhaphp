@@ -483,7 +483,7 @@ class App extends Container
     public function checkRequestCache($key, $expire = null, $except = [], $tag = null)
     {
         $cache = $this->request->cache($key, $expire, $except, $tag);
-
+        $cache =false;
         if ($cache) {
             $this->setResponseCache($cache);
         }

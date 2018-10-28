@@ -49,7 +49,7 @@ class Response
      * 是否允许请求缓存
      * @var bool
      */
-    protected $allowCache = true;
+    protected $allowCache = false;
 
     /**
      * 输出参数
@@ -131,7 +131,6 @@ class Response
         if ('cli' != PHP_SAPI && $this->app['env']->get('app_trace', $this->app->config('app.app_trace'))) {
             $this->app['debug']->inject($this, $data);
         }
-
         if (200 == $this->code && $this->allowCache) {
             $cache = $this->app['request']->getCache();
             if ($cache) {
@@ -302,7 +301,7 @@ class Response
      */
     public function expires($time)
     {
-        $this->header['Expires'] = $time;
+        //$this->header['Expires'] = $time;
 
         return $this;
     }

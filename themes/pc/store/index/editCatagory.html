@@ -1,42 +1,36 @@
-{extend name="../store/common/base" /}
+{extend name="../admin/common/base" /}
 {block name="body"}
 <form class="layui-form" method="post" style="padding-right: 10px;">
     <div class="layui-form-item">
-        <label class="layui-form-label">店铺名称</label>
+        <label class="layui-form-label">分类名称</label>
         <div class="layui-input-block">
-            <input type="text" name="name" value="{$data.name}" required lay-verify="required"  autocomplete="off"
+            <input type="text" name="name" required lay-verify="required" value="{$data.name}" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">地址</label>
+        <label class="layui-form-label">排序</label>
         <div class="layui-input-block">
-            <input type="text" name="address" value="{$data.address}" required lay-verify="required"  autocomplete="off"
+            <input type="text" name="sort" required lay-verify="required" value="{$data.sort}" autocomplete="off"
                    class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">LOGO</label>
-        <div class="layui-input-block">
-            {:hook('Upload',['type'=>'image','name'=>'logo', 'value'=>$data.logo])}
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">开关状态</label>
+        <label class="layui-form-label">是否禁用</label>
         <div class="layui-input-block">
             <input name="type" value="0" checked  title="开启"  type="radio">
             <input name="type" value="1"  title="关闭" type="radio">
         </div>
     </div>
 
-
+    <input type="hidden" name="store_id" value="{$data.store_id}" />
+    <input type="hidden" name="id" value="{$data.id}" />
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="sbm">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
-    <input name="id" value="{$data.id}" type="hidden">
 </form>
 
 <script>
@@ -46,7 +40,7 @@
             $.post('',data.field,function (res) {
                 if(res.status=='1'){
                     layer.msg(res.msg,{time:1000},function () {
-                         window.location.href="{:url('store/index/editStore')}";
+                         //window.location.href="{:url('store/index/editCatagory')}";
                     });
                 }else{
                     layer.msg(res.msg);

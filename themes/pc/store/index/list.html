@@ -27,7 +27,8 @@
                 </td>
                 <th>{if condition="$vo.type==0"} 正常{else/}停用{/if}</th>
                 <td>
-                    <a class="rha-bt-a" href="{:url('store/index/editStore',['id'=>$vo['id']])}">管理店铺</a>
+                    <a class="rha-bt-a" href="{:url('store/index/editStore',['store_id'=>$vo['id']])}">管理店铺</a>
+                    <a class="rha-bt-a" href="{:url('store/index/addCatagory',['store_id'=>$vo['id']])}">新增分类</a>
                     <a class="rha-bt-a" href="javascript:;" onclick="delReply('{$vo.id}')">删除</a>
                 </td>
             </tr>

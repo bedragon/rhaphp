@@ -197,6 +197,8 @@ class Template
 
         $cache = $this->app['cache'];
 
+        $this->config['display_cache'] = false;
+        $cache = false;
         if (!empty($this->config['cache_id']) && $this->config['display_cache']) {
             // 读取渲染缓存
             $cacheContent = $cache->get($this->config['cache_id']);

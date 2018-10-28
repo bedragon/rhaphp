@@ -43,6 +43,7 @@ class Base extends Controller
         }
         $this->admin_id = $admin['id'];
         $node = MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME;
+        //echo $node; exit;
         $t_menu = Db::name('menu')->where('pid', 0)->order('sort ASC')->select();
         $allMenu = Db::name('menu')->order('sort ASC')->select();
         $nowMenu = Db::name('menu')->where('url', $node)->order('sort ASC')->find();

@@ -112,17 +112,68 @@ class Index extends Base
             }
             return ajaxMsg(0, '更新失败');
         }
-        $id = (int)input('id');
+        $id = (int)input('store_id');
         $aStore = Db::name('store_list')->where(['id'=>$id, 'uid'=>$this->admin_id])->select();
         if (count($aStore) <= 0) {
             $this->assign('menu_title', '新增店铺');
-            view('addStore');
+            return view('addStore');
         }
-        
+        $this->assign('store_id', $id);
         $this->assign('data', $aStore[0]);
         $this->assign('menu_title', '修改店铺');
         return  view('editStore');
     }
 
+    public function checkCatagoryParams($data) {
+        if (utf8_strlen($data['name']) > 10) {
+            return  '名字在10个字内';
+        }
+        return  true;
+    }
+
+    public function addCatagory(){
+        if (Request::isAjax() && Request::isPost()) {
+            $data = input('post.');
+            
+            $checkMsg = $this->checkCatagoryParams($data);
+            if ($checkMsg !== TRUE) {
+                return ajaxMsg(0, $checkMsg);
+            } 
+
+            $model = new \app\common\model\StoreCatagory();
+            $id = $model->addCatagory($data, $data['store_id'], $this->admin_id);
+            if ($id) {
+                ajaxMsg(1, '新增成功');
+            }
+            ajaxMsg(0, '新增失败');
+        }
+        $store_id = input('store_id');
+        $this->assign('store_id', $store_id);
+        $this->assign('menu_title', '新增分类');
+        return  view('addCatagory');
+    }
+
+    public function editCatagory(){
+        $model = new \app\common\model\StoreCatagory();
+        if (Request::isAjax() && Request::isPost()) {
+            $data = input('post.');
+            
+            $checkMsg = $this->checkCatagoryParams($data);
+            if ($checkMsg !== TRUE) {
+                return ajaxMsg(0, $checkMsg);
+            } 
+
+            $id = $model->editCatagory($data, $data['id'], $data['store_id'], $this->admin_id);
+            if ($id) {
+                ajaxMsg(1, '修改成功');
+            }
+            ajaxMsg(0, '修改失败');
+        }
+        $id = input('id');
+        $data = $model->getCatagory($id, $this->admin_id);
+        $this->assign('data', $data);
+        $this->assign('menu_title', '修改分类');
+        return  view('editCatagory');
+    }
 
 }

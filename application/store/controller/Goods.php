@@ -63,6 +63,9 @@ class Goods extends Base
     }
 
     public function addSku(){
+        //var_dump(Request::isAjax());
+        //var_dump(Request::isPost());
+        //return ;
         if (Request::isAjax() && Request::isPost()) {
             $data = input('post.');
             
@@ -81,12 +84,18 @@ class Goods extends Base
                 'img'=> $data['img'],
                 'stock' => (int)$data['stock'],
                 'type' => (int)$data['type'], 
-                ], $this->admin_id);
+                'catagory_id' => (int)$data['catagory_id'],
+                ], $this->admin_id, (int)$data['store_id']);
             if ($id) {
-                ajaxMsg(1, '新增成功');
+               return ajaxMsg(1, '新增成功');
             }
-            ajaxMsg(0, '新增失败');
+            return  ajaxMsg(0, '新增失败');
         }
+        $storeID = input('store_id');
+        $oCatagory = new \app\common\model\StoreCatagory();
+        $aCatagoryList = $oCatagory->getCatagoryByStoreID($this->admin_id, $storeID);
+        $this->assign('caagory_list', $aCatagoryList);
+        $this->assign('store_id', $storeID);
         $this->assign('menu_title', '新增商品');
         return  view('addSku');
     }
@@ -117,6 +126,16 @@ class Goods extends Base
         $this->assign('data', $aStore[0]);
         $this->assign('menu_title', '修改商品');
         return  view('editSku');
+    }
+
+    public function showSku(){
+        $storeID = (int)input('store_id');
+        $page = (int)input('page');
+        $page = $page>=0 ? $page : 0;
+        $model = new \app\common\model\StoreSku();
+        $list = $model->getSkuListByStoreID($storeID, $this->admin_id, $page);
+        
+        var_dump($list);
     }
 
 

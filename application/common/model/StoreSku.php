@@ -9,6 +9,7 @@
 
 namespace app\common\model;
 use think\Model;
+use think\Db;
 
 class StoreSku extends Model
 {
@@ -20,7 +21,9 @@ class StoreSku extends Model
         return $list;
     }
     
-    public function addSku($data, $uid) {
+    public function addSku($data, $uid, $storeID) {
+        //检查store_id是否符合uid
+        $storeID = (int)$storeID;
         $id = $this->insertGetId(
             [
             'name' => $data['name'],
@@ -30,7 +33,8 @@ class StoreSku extends Model
             'img'=> $data['img'],
             'stock' => (int)$data['stock'],
             'type' => (int)$data['type'],
-            'uid' => (int)$uid,
+            'store_id' => (int)$storeID,
+            'catagory_id' => (int)$data['catagory_id'],
             ]);
         return $id;
     }
@@ -49,6 +53,17 @@ class StoreSku extends Model
         }
         $ret = $this->allowField(true)->save($aUpdate, ['id' => (int)$data['id'], 'uid' => $uid]);
         return  $ret;
+    }
+
+    public function getSkuListByStoreID($storeID, $uid, $page, $size = 20) {
+        //检查store_id是否符合uid
+        $storeID = (int)$storeID;
+        $page = (int)$page;
+        $page = $page >= 0 ? $page : 0;
+        $limit = $page * $size.', ' . $size;
+        $list = DB::table('re_store_sku')->where(['store_id' => $storeID])->order('id DESC')->limit($limit)->select();
+        return $list;
+
     }
 
 }

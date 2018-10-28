@@ -1,4 +1,4 @@
-{extend name="../admin/common/base" /}
+{extend name="../store/common/base" /}
 {block name="body"}
 <form class="layui-form" method="post" style="padding-right: 10px;">
     <div class="layui-form-item">
@@ -21,6 +21,17 @@
         <div class="layui-input-block">
             <input type="text" name="unit_price" required lay-verify="required" placeholder="请输入单价" autocomplete="off"
                    class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类</label>
+        <div class="layui-input-block">
+            <select name="catagory_id" class="layui-select">
+                 <option value="0">请选择</option>
+                 {volist name="caagory_list" id="t"} 
+                    <option value="{$t.id}">{$t.name}</option>
+                 {/volist}
+            </select>
         </div>
     </div>
     <div class="layui-form-item">
@@ -50,8 +61,7 @@
             <input name="type" value="1"  title="下架" type="radio">
         </div>
     </div>
-
-
+    <input type="hidden" name="store_id" value="{$store_id}" />
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="sbm">立即提交</button>
@@ -63,7 +73,16 @@
 <script>
     layui.use('form', function () {
         var form = layui.form;
+        
         form.on('submit(sbm)', function (data) {
+
+            var catagoryValue = $("select[name=catagory_id]").val();
+            //alert(catagoryValue);
+            if (catagoryValue == '0') {
+                layer.msg("请选中一个分类，或者先创建一个新分类");
+                return false;
+            }
+            
             $.post('',data.field,function (res) {
                 if(res.status=='1'){
                     layer.msg(res.msg,{time:1000},function () {

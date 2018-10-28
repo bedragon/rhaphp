@@ -17,7 +17,7 @@ require __DIR__ . '/library/think/Loader.php';
 Loader::register();
 
 // 注册错误和异常处理机制
-Error::register();
+//Error::register();
 
 // 实现日志接口
 if (interface_exists('Psr\Log\LoggerInterface')) {
