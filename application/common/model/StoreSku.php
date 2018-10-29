@@ -35,6 +35,12 @@ class StoreSku extends Model
             'type' => (int)$data['type'],
             'store_id' => (int)$storeID,
             'catagory_id' => (int)$data['catagory_id'],
+            'discount_type' => (int)$data['discount_type'],
+            'discount_price' => $data['discount_price'],
+            'discount_count' => (int)$data['discount_count'],
+            'vip_price' => $data['vip_price'],
+            'vip_price_type'=> (int)$data['vip_price_type'],
+            'time' => time(),
             ]);
         return $id;
     }
@@ -63,7 +69,13 @@ class StoreSku extends Model
         $limit = $page * $size.', ' . $size;
         $list = DB::table('re_store_sku')->where(['store_id' => $storeID])->order('id DESC')->limit($limit)->select();
         return $list;
+    }
 
+    public function getSkuCountByStoreID($storeID, $uid) {
+        //检查store_id是否符合uid
+        $storeID = (int)$storeID;
+        $count = DB::table('re_store_sku')->where(['store_id' => $storeID])->count();
+        return  $count;
     }
 
 }

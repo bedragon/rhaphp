@@ -44,12 +44,12 @@ class Index extends Base
     }
 
     public function checkStoreParams($data){
-            if (utf8_strlen($data['name']) > 10) {
-                return '名字太长';
+            if (utf8_strlen($data['name']) > 10 || empty($data['name'])) {
+                return '名字不能为空或名字太长，不能超过10个字符';
             }
 
             if (utf8_strlen($data['address']) > 60) {
-                return '地址太长';
+                return '地址太长，不能超过60个字符';
             }
         
             if (strlen($data['logo']) > 200) {
@@ -70,6 +70,7 @@ class Index extends Base
             } 
 
             $mode = new \app\common\model\StoreList();
+            $userMode = new \app\common\model\StoreUser();
             $id = $mode->insertGetId(
                 [
                 'name' => $data['name'], 
@@ -77,8 +78,14 @@ class Index extends Base
                 'logo' => $data['logo'], 
                 'type' => (int)$data['type'], 
                 'uid' => $this->admin_id
-                ]);
+            ]);
+
+            $manageUserID = 0;
             if ($id) {
+                $manageUserID = $userMode->addUserAdmin($id, $this->admin_id);
+            }
+
+            if ($manageUserID > 0) {
                 ajaxMsg(1, '新增成功');
             }
             ajaxMsg(0, '新增失败');
@@ -138,8 +145,11 @@ class Index extends Base
             $checkMsg = $this->checkCatagoryParams($data);
             if ($checkMsg !== TRUE) {
                 return ajaxMsg(0, $checkMsg);
-            } 
-
+            }
+            $userModel = new \app\common\model\StoreUser(); 
+            if (!$userModel->isCanManageStore($this->admin_id, $data['store_id'])) {
+                ajaxMsg(0, '没有权限');
+            }    
             $model = new \app\common\model\StoreCatagory();
             $id = $model->addCatagory($data, $data['store_id'], $this->admin_id);
             if ($id) {

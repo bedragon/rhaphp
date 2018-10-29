@@ -2366,3 +2366,16 @@ function getRuleTypeName($type)
             return '未知';
     }
 }
+
+
+function check_price($price)
+{
+    $priceArr = explode('.', (string)$price);
+    if (count($priceArr) == 1 && is_numeric($priceArr[0])) {
+        return  true;
+    }
+    if (count($priceArr) == 2 && is_numeric($priceArr[0]) && is_numeric($priceArr[1]) && strlen($priceArr[1]) >=1 && strlen($priceArr[1]) <=2){
+        return  true;
+    }
+    return  false;
+}

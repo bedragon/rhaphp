@@ -41,6 +41,7 @@ class Goods extends Base
         return view();
     }
 
+
     protected function checkSkuParams($data){
             if (utf8_strlen($data['name']) > 10) {
                 return '名字太长';
@@ -56,6 +57,14 @@ class Goods extends Base
         
             if (strlen($data['img']) > 200) {
                 return '图片地址太长';
+            }
+
+            if (check_price($data['unit_price']) == false) {
+                return '单价错误，请重新输入';
+            }
+
+            if (check_price($data['discount_price']) == false) {
+                return '会员价格错误，请重新输入';
             }
             
             return true;
@@ -73,18 +82,28 @@ class Goods extends Base
             if ($checkMsg !== TRUE) {
                 return ajaxMsg(0, $checkMsg);
             } 
+            
+            $userModel = new \app\common\model\StoreUser();
+            if (!$userModel->isCanManageStore($this->admin_id, $data['store_id'])) {
+                return   ajaxMsg(0, '没有权限');
+            }
 
             $mode = new StoreSku();
             $id = $mode->addSku(
                 [
                 'name' => $data['name'], 
                 'unit' => $data['unit'], 
-                'unit_price' => $data['unit_price'], 
+                'unit_price' => bcmul($data['unit_price'], 100, 0), 
                 'content' => $data['content'],
                 'img'=> $data['img'],
                 'stock' => (int)$data['stock'],
                 'type' => (int)$data['type'], 
                 'catagory_id' => (int)$data['catagory_id'],
+                'discount_type' => (int)$data['discount_type'],
+                'discount_price' => bcmul($data['discount_price'], 100, 0),
+                'discount_count' => (int)$data['discount_count'],
+                'vip_price' => bcmul($data['vip_price'], 100, 0),
+                'vip_price_type'=> (int)$data['vip_price_type'],
                 ], $this->admin_id, (int)$data['store_id']);
             if ($id) {
                return ajaxMsg(1, '新增成功');
@@ -134,8 +153,8 @@ class Goods extends Base
         $page = $page>=0 ? $page : 0;
         $model = new \app\common\model\StoreSku();
         $list = $model->getSkuListByStoreID($storeID, $this->admin_id, $page);
-        
-        var_dump($list);
+        var_dump($model->getSkuCountByStoreID($storeID, $this->admin_id));exit;      
+        return  view('list');
     }
 
 
