@@ -1,13 +1,4 @@
 <?php
-// +----------------------------------------------------------------------
-// | [RhaPHP System] Copyright (c) 2017 http://www.rhaphp.com/
-// +----------------------------------------------------------------------
-// | [RhaPHP] 并不是自由软件,你可免费使用,未经许可不能去掉RhaPHP相关版权
-// +----------------------------------------------------------------------
-// | Author: Geeson <qimengkeji@vip.qq.com>
-// +----------------------------------------------------------------------
-
-
 namespace app\admin\controller;
 
 
@@ -25,11 +16,13 @@ class Base extends Controller
 
     public function initialize()
     {
+        /*
         if (!is_file(APP_PATH . '../config/database.php') || !is_file(APP_PATH . '/install.lock')) {
             $root = Request::root();
             header('Location: ' . $root . '/?s=install');
             exit;
         }
+         */
         wxpayNotify();
         $admin = getAdmin();
         if (empty($admin)) {

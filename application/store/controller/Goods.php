@@ -112,7 +112,7 @@ class Goods extends Base
         }
         $storeID = input('store_id');
         $oCatagory = new \app\common\model\StoreCatagory();
-        $aCatagoryList = $oCatagory->getCatagoryByStoreID($this->admin_id, $storeID);
+        $aCatagoryList = $oCatagory->getCatagoryByStoreID($storeID);
         $this->assign('caagory_list', $aCatagoryList);
         $this->assign('store_id', $storeID);
         $this->assign('menu_title', '新增商品');
@@ -151,9 +151,23 @@ class Goods extends Base
         $storeID = (int)input('store_id');
         $page = (int)input('page');
         $page = $page>=0 ? $page : 0;
+        $userModel = new \app\common\model\StoreUser();
+        if (!$userModel->isCanManageStore($this->admin_id, $storeID)) {
+            return   ajaxMsg(0, '没有权限');
+        }
         $model = new \app\common\model\StoreSku();
         $list = $model->getSkuListByStoreID($storeID, $this->admin_id, $page);
-        var_dump($model->getSkuCountByStoreID($storeID, $this->admin_id));exit;      
+        $count = $model->getSkuCountByStoreID($storeID, $this->admin_id);
+
+        foreach ($list as &$item) {
+            $item['unit_price'] = bcdiv($item['unit_price'], 100, 2);
+            $item['discount_price'] = bcdiv($item['discount_price'], 100, 2);
+            $item['vip_price'] = bcdiv($item['vip_price'], 100, 2);
+        }
+        $this->assign('page', $page);
+        $this->assign('count', $count);
+        $this->assign('list', $list);
+        $this->assign('store_id', $storeID);
         return  view('list');
     }
 

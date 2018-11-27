@@ -13,7 +13,8 @@ Route::get('think', function () {
     return 'hello,ThinkPHP5!';
 });
 Route::rule(ADDON_ROUTE.':addon/:col/:act', '\\app\\mp\controller\\Call@run');
-Route::rule('/api/:_mid/:addon/:col/:act', '\\app\\miniapp\controller\\Call@run');
+//Route::rule('/api/store/:addon//:col/:act', '\\app\\api\controller\\Call@run');
+//Route::rule('/api/:_mid/:addon/:col/:act', '\\app\\miniapp\controller\\Call@run');
 Route::rule('miniprogram/:_mid', 'miniapp/entr/index');
 return [
 

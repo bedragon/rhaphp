@@ -13,5 +13,9 @@ use think\Model;
 class StoreList extends Model
 {
 
-
+    public function getStore($storeID) {
+        $storeID = (int)$storeID;
+        $data = $this->where(['id' => $storeID])->select();
+        return  isset($data[0]) ? $data[0] : false;
+    }
 }

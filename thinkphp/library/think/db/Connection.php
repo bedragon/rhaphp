@@ -1557,7 +1557,6 @@ abstract class Connection
             // 存储过程返回结果
             return $this->procedure();
         }
-
         $result = $this->PDOStatement->fetchAll($this->fetchType);
 
         $this->numRows = count($result);

@@ -71,6 +71,12 @@ class StoreSku extends Model
         return $list;
     }
 
+    public function getAllSkuListByStoreID($storeID, $type) {
+        $storeID = (int)$storeID;
+        $type = (int)$type;
+        return  DB::table('re_store_sku')->where(['store_id' => $storeID, 'type' => $type])->order('sort asc')->select();
+    }
+
     public function getSkuCountByStoreID($storeID, $uid) {
         //检查store_id是否符合uid
         $storeID = (int)$storeID;

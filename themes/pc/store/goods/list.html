@@ -1,4 +1,4 @@
-{extend name="../admin/common/base" /}
+{extend name="../store/common/base" /}
 {block name="nav_title"}
 <a href="{:url('store/Goods/addSku')}"class="layui-btn layui-btn-normal layui-btn-sm rha-nav-title">增加商品</a>
 {/block}
@@ -8,12 +8,26 @@
         <colgroup>
             <col width="">
             <col width="80" >
-            <col width="280">
+            <col width="80" >
+            <col width="60" >
+            <col width="60" >
+            <col width="80" >
+            <col width="60" >
+            <col width="80" >
+            <col width="70" >
+            <col width="80">
         </colgroup>
         <thead>
         <tr>
-            <th>店铺名称</th>
-            <th>状态</th>
+            <th>商品名称</th>
+            <th>分类</th>
+            <th>单价</th>
+            <th>库存</th>
+            <th>优惠</th>
+            <th>优惠价</th>
+            <th>会员</th>
+            <th>会员价</th>
+            <th>下架</th>
             <th>操作</th>
         </tr>
         </thead>
@@ -24,6 +38,27 @@
                     <div class="logo-right">
                         <p class="p1">{$vo.name}</p>
                     </div>
+                </td>
+                <td>
+                    熟食
+                </td>
+                <td>
+                    {$vo.unit_price}
+                </td>
+                <td>
+                    {$vo.stock}
+                </td>
+                <td>
+                    {if condition="$vo.discount_type==0"}否{else/}是{/if}
+                </td>
+                <td>
+                    {$vo.discount_price}
+                </td>
+                <td>
+                    {if condition="$vo.vip_price_type==0"}否{else/}是{/if}
+                </td>
+                <td>
+                    {$vo.vip_price}
                 </td>
                 <th>{if condition="$vo.type==0"} 正常{else/}停用{/if}</th>
                 <td>

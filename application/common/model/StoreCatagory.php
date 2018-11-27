@@ -12,10 +12,11 @@ use think\Model;
 
 class StoreCatagory extends Model
 {
-    public function getCatagoryByStoreID($uid, $storeID) {
+    public function getCatagoryByStoreID($storeID, $type = 0) {
         //判断uid是否对storeID有权限
         $storeID = (int)$storeID;
-        $list = $this->where(['store_id' => $storeID])->select();
+        $type = (int)$type;
+        $list = $this->where(['store_id' => $storeID, 'type' => $type])->order('sort asc')->select();
         return  $list;
     }
 
